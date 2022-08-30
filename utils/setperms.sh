@@ -1,21 +1,7 @@
 #!/bin/bash
 
-version=v1.4
+source ../common/dcp_functions.sh
 
-#######################  Colors  #######################
-
-b_green='\033[1;92m'
-b_yellow='\033[0;93m'
-b_blue='\033[1;94m'
-# b_red='\033[0;91m'
-clear='\033[0m'
-
-######################  Functions  #####################
-
-function confirm {
-    echo -en "${b_blue}Continue?${clear} (y/N): "
-    read -re confirmation && [[ $confirmation == [yY] || $confirmation == [yY][eE][sS] ]] || exit 1
-}
 
 function get_dcp {
     echo; echo -en "${b_blue}Drag and drop DCP folder and press [ENTER]: ${clear}"

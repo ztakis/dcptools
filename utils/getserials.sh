@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# version=v1.1
-
-source /opt/dcptools/common/local_config
+source ../common/dcp_functions.sh
 
 if [ $EUID -ne 0 ]; then
     echo; echo -e "\033[1;93mError: Must be root\033[0m"; echo; exit 1
