@@ -38,7 +38,7 @@ function set_perms {
 }
 
 function permissions_menu {
-    echo; echo "------------------------"
+    echo "------------------------"
     echo -e "${b_blue}Select to continue:     ${clear}"
     echo "------------------------"
     export COLUMNS=20
@@ -57,13 +57,11 @@ function permissions_menu {
 
 #########################  Main  ########################
 
-echo; echo -e "${b_blue}perms_set ${clear}${b_green}$version${clear}"
+echo; echo -e "${b_blue}setperms ${clear}${b_green}$version${clear}"; echo
 
-if [[ $EUID -ne 0 ]]; then
-    echo; echo -e "${b_yellow}Error: Must be root${clear}"; echo; exit 1
-fi
-
+root_check
 permissions_menu "$1"
 
 echo; echo -e "${b_green}Finished${clear}"; echo
+
 exit 0
