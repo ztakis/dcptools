@@ -1,0 +1,244 @@
+#!/bin/bash
+
+version=v2.2
+
+excluded_disks='nvme|sda|sdb|sdc'
+
+#######################  Colors  #######################
+
+b_red='\033[0;91m'
+b_green='\033[1;92m'
+b_yellow='\033[0;93m'
+b_blue='\033[1;94m'
+clear='\033[0m'
+
+######################  Functions  #####################
+
+function confirm {
+    echo -en "${b_blue}Continue?${clear} (y/N): "
+    read -re confirmation && [[ $confirmation == [yY] || $confirmation == [yY][eE][sS] ]] || exit 1
+}
+
+function set_permissions {
+    if [ "$1" == "-f" ]; then
+        echo -e "${b_yellow}Setting DCP source ownership to ${clear}${b_red}root:root${clear}"\
+        "+ ${b_green}full (777)${clear}${b_yellow} permissions${clear}"
+        chown -R root:root "$source"
+        chmod -R 777 "$source"
+    elif [ "$1" == "-n" ]; then
+        echo -e "${b_yellow}Setting DCP source ownership to ${clear}${b_red}root:root${clear}"\
+        "+ ${b_blue}normal (755,644)${clear}${b_yellow} permissions${clear}"
+        chown -R root:root "$source"
+        find "$source" -type d | while read -r dir; do chmod 755 "$dir"; done
+        find "$source" -type f | while read -r file; do chmod 644 "$file"; done
+    else
+        echo -e "${b_yellow}Setting DCP source ownership to ${clear}${b_blue}1000:1000${clear}"\
+        "+ ${b_green}full (777)${clear}${b_yellow} permissions${clear}"
+        chown -R 1000:1000 "$source"
+        chmod -R 777 "$source"
+    fi
+}
+
+function header {
+    confirm
+    echo; echo -en "${b_blue}Drag and drop source folder and press [ENTER]: ${clear}"
+    read -re input
+    source=$(echo "$input" | tr -d "'")
+    dcp=$(basename "$source")
+    echo; echo -e "${b_yellow}DCP source is:${clear} $source"
+    confirm; echo
+    set_permissions -n
+    source_size=$(du -sb --exclude=lost+found "$source" | cut -f 1)
+    mapfile -t usb_list < <(find /media/"$SUDO_USER"/* -prune -type d | sort -V)
+    usb_count=$(echo "${usb_list[@]}" | wc -w)
+    for ((p=0; p<usb_count; p++)); do prev+=(0); done
+    for ((r=0; r<usb_count; r++)); do rem+=(0); done
+    echo; echo -e "${b_yellow}Destination disks found in:${clear} /media/$SUDO_USER"
+    for b in "${usb_list[@]}"; do basename "$b"; done
+    echo -e "${b_yellow}Total found:${clear} $usb_count disk(s)"
+    if [ -z "$(find /media/"$SUDO_USER"/*/"$dcp" -prune -type d 2>/dev/null)" ]; then
+        first_time=true
+    else
+        first_time=false
+        echo -e "${b_yellow}Destination DCP folder exists. Will use rsync${clear}"
+    fi
+    confirm
+}
+
+function bytecheck {
+    echo; echo -e "---------------- ${b_yellow}DCP source(s)${clear} -----------------"; echo
+    du -sb "$source"
+    echo; echo -e "------------- ${b_yellow}Destination disk(s)${clear} --------------"; echo
+    for d in "${usb_list[@]}"; do du -sb --exclude=lost+found "$d"/"$dcp"; done
+}
+
+function get_serials {
+    mapfile -t auto_mounted < <(grep '/dev/sd' /proc/self/mounts | grep -Ev $excluded_disks)
+    # echo; printf "%s\t\t%s\t\t\t%s\t\t\t%s\n" "DISK" "SERIAL" "MOUNTPOINT" "SIZE"
+    # echo "------------------------------------------------------------------------------------"
+    echo; printf "%s\t\t%s\t\t\t%s\n" "DISK" "SERIAL" "MOUNTPOINT"
+    echo "-----------------------------------------------------------------"
+    for u in "${auto_mounted[@]}"; do
+        dev=$(echo "$u" | awk '{print $1}')
+        serial=$(smartctl -i "$dev" | grep 'Serial' | awk '{print $3}')
+        mountpoint=$(echo "$u" | awk '{print $2}')
+        # size=$(du -sb --exclude=lost+found "$mountpoint"/"$dcp" | awk '{print $1}')
+        # printf "%s\t%s\t\t%s\t\t%s\n" "$dev" "$serial" "$mountpoint" "$size"
+        printf "%s\t%s\t\t%s\n" "$dev" "$serial" "$mountpoint"
+    done
+    echo
+}
+
+function progressbar {
+    output="\n"
+    output="$output ["
+    total=$1
+    count=0
+    while [ "$count" -lt "$total" ]; do
+        output="$output="
+        ((count++))
+    done
+    output="$output>"
+    ((total=100-total))
+    count=0
+    while [ $count -lt $total ]; do
+        output="$output-"
+        ((count++))
+    done
+    output="$output] $(printf "%3d %s %4d %s %s" "$1" "%  -" "$3" "MB/s  - " "$4   ")"
+    tput rc
+    tput cud $(($2+1))
+    echo -e "$output"
+}
+
+function multi_bars {
+    tput civis
+    tput clear
+    echo; echo -en "${b_yellow}Copying ...${clear}"
+    tput sc
+    t=0
+    while true ; do
+        for ((j=0; j<usb_count; j++)); do
+            dst=${usb_list[j]}
+            l=$(basename "$dst")
+            if [ -d "$dst"/"$dcp" ]; then
+                current_size=$(du -sb --exclude=lost+found "$dst"/"$dcp" | cut -f 1)
+                i=$(echo "100 * $current_size / $source_size" | bc)
+                k=$(echo "($current_size - ${prev[j]}) / 1000000" | bc)
+                if (("$k" > 999)); then k=999; fi
+                progressbar "$i" "$j" "$k" "$l"
+                rem_bytes=$(( (source_size - current_size) / ((current_size - prev[j]) + 1) ))
+                rem[$j]=$rem_bytes
+                prev[$j]=$current_size
+                else progressbar 0 "$j" 0
+            fi
+            ((t=t+i))
+        done
+        elapsed=$((SECONDS-start))
+        if [ $t -eq $((usb_count * 100)) ]; then break; else t=0; fi
+        if [ "$1" == -b ]; then
+        echo; echo -e "${b_blue}Elapsed:${clear} $(date -ud @"$elapsed" +%T)"; echo
+        else
+            remaining=$(printf "%d\n" "${rem[@]}" | sort -n | tail -1)
+            echo; echo -e "${b_blue}Elapsed:${clear} $(date -ud @"$elapsed" +%T)"\
+            " /  ${b_blue}Remaining:${clear} $(date -ud @"$remaining" +%T)"; echo
+        fi
+        sleep 1
+    done
+    echo; printf "%${COLUMNS}s" ""
+    echo -e "${b_green}Finished in:${clear}  $(date -ud @$(( SECONDS - start )) +%T)"; echo
+    tput cnorm
+}
+
+function copy2all {
+    header
+    start=$SECONDS
+    if [ "$first_time" == true ]; then
+        for dest in "${usb_list[@]}"; do
+            cp -rp "$source" "$dest/" 2>> error.log &
+        done
+    elif [ "$first_time" == false ]; then
+        for dest in "${usb_list[@]}"; do
+            rsync -aq "$source" "$dest/" 2>> error.log &
+        done
+    fi
+    multi_bars
+    sleep 1; bytecheck; get_serials
+}
+
+function batch_copy {
+    if [ "$1" == true ]; then
+        for dest in "${usb_list[@]}"; do
+            if ((c % threads == 0)); then wait; fi
+            ((c++))
+            cp -rp "$source" "$dest/" 2>> error.log &
+        done
+    elif [ "$1" == false ]; then
+        for dest in "${usb_list[@]}"; do
+            if ((c % threads == 0)); then wait; fi
+            ((c++))
+            rsync -aq "$source" "$dest/" 2>> error.log &
+        done
+    fi
+}
+
+function copy2all_b {
+    header
+    while [ -z "$valid" ] ; do
+        echo -en "${b_blue}Enter number of disk(s) for each batch : ${clear}"
+        read -re threads
+        if [[ "$threads" -gt "$usb_count" || "$threads" -eq "0" ]]; then
+            echo "Invalid input"; else valid=1
+        fi
+    done
+    confirm
+    start=$SECONDS
+    batch_copy "$first_time" &
+    multi_bars -b
+    sleep 1; bytecheck; get_serials
+}
+
+function sanity_checks {
+    # check if we are root
+    if [ $EUID -ne 0 ]; then
+        echo; echo -e "${b_yellow}Error: Must be root${clear}"; echo; exit 1
+    fi
+    # check if any disks are plugged in
+    if [ -z "$(find /media/"$SUDO_USER"/* -prune -type d 2>/dev/null)" ]; then
+        echo; echo -e "${b_yellow}Error: No automounted disk(s) found${clear}"; echo; exit 1
+    fi
+    # check & delete previous error.log
+    if [ -f error.log ]; then
+        if [ -s error.log ]; then
+            echo; echo -e "${b_yellow}Previous error.log not empty! Delete?${clear}"
+            confirm; rm error.log
+        else rm error.log
+        fi
+    fi
+}
+
+#########################  Main  ########################
+
+echo; echo -e "${b_blue}dcp_copy_cli${clear} ${b_green}$version${clear}"
+
+sanity_checks
+
+# Selection menu
+echo; echo "-------------------------"
+echo -e "${b_blue}Select to continue:     ${clear}"
+echo "-------------------------"
+export COLUMNS=20
+select opt in "Copy to all" "Copy to all in batches" "Exit"; do
+    case $opt in
+        "Copy to all") echo; echo -e "${b_yellow}$opt${clear}"; copy2all; break;;
+        "Copy to all in batches") echo; echo -e "${b_yellow}$opt${clear}"; copy2all_b; break;;
+        "Exit") echo; echo -e "${b_yellow}Bye!${clear}"; echo; exit;;
+        * ) echo "Invalid option"
+    esac
+done
+
+if [ -s error.log ]; then
+    echo; echo -e "${b_yellow}Errors reported! Check error.log for details${clear}"
+fi
+
+echo; exit 0
