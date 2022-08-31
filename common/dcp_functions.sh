@@ -178,13 +178,14 @@ function get_sources {
 
 function byte_check {
     for source in "${src_path_list[@]}"; do
-        echo; echo -e "${b_yellow}DCP source(s)${clear}"
+        echo -e "${b_yellow}DCP source(s)${clear}"
         echo "-----------------------------------------------------------------"
         du -sb "$source"
-        echo; echo -e "${b_yellow}Destination disk(s)${clear}"
+        echo -e "${b_yellow}Destination disk(s)${clear}"
         echo "-----------------------------------------------------------------"
         for d in "${usb_list[@]}"; do du -sb --exclude=lost+found "$d"/"$(basename "$source")"; done
     done
+    echo
 }
 
 function get_serials {
@@ -782,8 +783,9 @@ function init_cp {
     confirm_t $long_delay
     get_destinations
     copy2all
-    sleep 1
+    echo
     byte_check
+    echo
     get_serials
     error_log_check
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
@@ -810,8 +812,9 @@ function init_cp_b {
     confirm_t $long_delay
     get_destinations
     copy2all_b
-    sleep 1
+    echo
     byte_check
+    echo
     get_serials
     error_log_check
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
