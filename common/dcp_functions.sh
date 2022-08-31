@@ -595,6 +595,7 @@ function hashcheck {
         rm -f "$temp"/hashes.sha1
         error_log_check -h
         echo -e "${b_green}Finished in:${clear}  $(date -ud @$(( SECONDS - start )) +%T)"; echo
+        echo
     done
 }
 
