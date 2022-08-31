@@ -460,8 +460,8 @@ function multi_bars {
         sleep 1
     done
     echo; echo
-    # printf "%${COLUMNS}s" ""
-    echo -e "\e[1A\e[K${b_green}Finished in:${clear}  $(date -ud @$(( SECONDS - start )) +%T)"; echo; echo
+    echo -e "\e[1A\e[K${b_green}Finished in:${clear}  $(date -ud @$(( SECONDS - start )) +%T)"
+    echo; echo
     tput cnorm
 }
 
