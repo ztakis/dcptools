@@ -181,11 +181,11 @@ function byte_check {
         echo -e "${b_yellow}DCP source(s)${clear}"
         echo "-----------------------------------------------------------------"
         du -sb "$source"
-        echo -e "${b_yellow}Destination disk(s)${clear}"
+        echo; echo -e "${b_yellow}Destination disk(s)${clear}"
         echo "-----------------------------------------------------------------"
         for d in "${usb_list[@]}"; do du -sb --exclude=lost+found "$d"/"$(basename "$source")"; done
+        echo; echo
     done
-    echo
 }
 
 function get_serials {
@@ -459,8 +459,9 @@ function multi_bars {
         fi
         sleep 1
     done
-    echo; printf "%${COLUMNS}s" ""
-    echo -e "${b_green}Finished in:${clear}  $(date -ud @$(( SECONDS - start )) +%T)"; echo
+    echo; echo
+    # printf "%${COLUMNS}s" ""
+    echo -e "\e[1A\e[K${b_green}Finished in:${clear}  $(date -ud @$(( SECONDS - start )) +%T)"; echo; echo
     tput cnorm
 }
 
@@ -783,9 +784,7 @@ function init_cp {
     confirm_t $long_delay
     get_destinations
     copy2all
-    echo
     byte_check
-    echo
     get_serials
     error_log_check
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
@@ -811,10 +810,7 @@ function init_cp_b {
     # wait4lazyinit
     confirm_t $long_delay
     get_destinations
-    copy2all_b
-    echo
     byte_check
-    echo
     get_serials
     error_log_check
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
