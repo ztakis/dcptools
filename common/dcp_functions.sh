@@ -189,7 +189,6 @@ function byte_check {
 
 function get_serials {
     mapfile -t auto_mounted < <(grep '/dev/sd' /proc/self/mounts | grep -Ev $protected_disks)
-    # echo
     printf "%s\t\t%s\t\t\t%s\n" "DISK" "SERIAL" "MOUNTPOINT"
     echo "-----------------------------------------------------------------"
     for u in "${auto_mounted[@]}"; do
@@ -198,7 +197,7 @@ function get_serials {
         mountpoint=$(echo "$u" | awk '{print $2}')
         printf "%s\t%s\t\t%s\n" "$dev" "$serial" "$mountpoint"
     done
-    # echo
+    echo
 }
 
 ################## DiskPrep Functions ##################-------------------------------------------------------------------------------------
@@ -690,17 +689,14 @@ function hashcheck_main {
 ################# Utilities Functions ##################
 
 function automount_main {
-    echo
     root_check
     automount_disks
 
 }
 
 function getserials_main {
-    echo
     root_check
     get_serials
-    echo
 }
 
 ################# SetPerms Functions ##################
