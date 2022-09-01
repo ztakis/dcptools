@@ -811,6 +811,7 @@ function init_cp_b {
     # wait4lazyinit
     confirm_t $long_delay
     get_destinations
+    copy2all_b
     byte_check
     get_serials
     error_log_check
