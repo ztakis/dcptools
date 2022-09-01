@@ -837,6 +837,7 @@ function init_cp_hsck {
     get_destinations
     copy2all
     confirm_t $long_delay
+    echo
     hashcheck
     get_serials
     error_log_check
@@ -866,6 +867,7 @@ function init_cp_hsck_b {
     get_destinations
     copy2all_b
     confirm_t $long_delay
+    echo
     hashcheck -b
     get_serials
     error_log_check
