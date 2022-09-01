@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.5
+version=1.4
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
@@ -439,7 +439,6 @@ function multi_bars {
                 current_size=$(du -sb --exclude=lost+found "$dst"/"$dcp" | cut -f 1)
                 i=$(echo "100 * $current_size / $source_size" | bc)
                 k=$(echo "($current_size - ${prev[j]}) / 1000000" | bc)
-                if (("$k" < 0)); then k=0; fi
                 if (("$k" > 999)); then k=999; fi
                 progressbar "$i" "$j" "$k" "$l"
                 rem_bytes=$(( (source_size - current_size) / ((current_size - prev[j]) + 1) ))
