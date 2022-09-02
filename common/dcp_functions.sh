@@ -801,6 +801,7 @@ function init_cp_b {
 
 function init_cp_hsck {
     confirm
+    no_disk_check
     diskprep_warning
     disks_found
     confirm
