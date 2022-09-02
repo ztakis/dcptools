@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.7
+version=1.6
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
@@ -56,6 +56,22 @@ function spinner {
     done
 }
 
+function wait4lazyinit {
+    sleep 2
+    # if  [ -n "$(pgrep ext4lazyinit)" ]; then return; fi
+    echo -e "${b_yellow}Waiting for background processes to finish...${clear}"
+    echo "------------------------------------------------"
+    start=$SECONDS
+    spinner &
+    SPIN_PID=$!
+    disown
+    while true; do
+        if  [ -z "$(pgrep ext4lazyinit)" ]; then break; fi
+    done
+    kill -9 $SPIN_PID
+    echo; echo; sleep 2
+}
+
 function disk_list {
     lsblk | grep disk | awk '{print $1}' | grep -Ev $protected_disks | sort
 }
@@ -108,6 +124,14 @@ function automount_disks {
     echo -e "${b_blue}Automounting disks...${clear}"
     for disk in $(disk_list); do
         sudo -u "${SUDO_USER}" udisksctl mount --options noatime -b /dev/"$disk"1
+    done; echo
+}
+
+function mount_disks {
+    echo -e "${b_blue}Mounting disks...${clear}"
+    for disk in $(disk_list); do
+        mkdir /media/"${SUDO_USER}"/"$disk"1
+        mount -t auto -o no_prefetch_block_bitmaps  /dev/"$disk"1 /media/"${SUDO_USER}"/"$disk"1
     done; echo
 }
 
@@ -681,6 +705,12 @@ function automount_main {
     automount_disks
 }
 
+function mount_main {
+    root_check
+    unmount_disks
+    mount_disks
+}
+
 function getserials_main {
     root_check
     get_serials
@@ -764,6 +794,7 @@ function init_cp {
     diskprep_end
     automount_disks
     show_disks
+    # wait4lazyinit
     confirm_t $long_delay
     get_destinations
     copy2all
@@ -790,6 +821,7 @@ function init_cp_b {
     diskprep_end
     automount_disks
     show_disks
+    # wait4lazyinit
     confirm_t $long_delay
     get_destinations
     copy2all_b
@@ -814,6 +846,7 @@ function init_cp_hsck {
     diskprep_end
     automount_disks
     show_disks
+    # wait4lazyinit
     confirm_t $long_delay
     get_destinations
     copy2all
@@ -843,6 +876,7 @@ function init_cp_hsck_b {
     diskprep_end
     automount_disks
     show_disks
+    # wait4lazyinit
     confirm_t $long_delay
     get_destinations
     copy2all_b
