@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.5
+version=1.6
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
@@ -110,6 +110,16 @@ function no_disk_check {
     fi
 }
 
+function unmount_disks {
+    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
+        echo -e "${b_yellow}Found mounted disk(s). Unmounting...${clear}"; echo
+        umount -f /media/"$SUDO_USER"/*
+    fi
+    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
+        echo -e "${b_yellow}Error: Unmounting disk(s) failed. Exiting...${clear}"; echo; exit 1
+    fi
+}
+
 function automount_disks {
     echo -e "${b_blue}Automounting disks...${clear}"
     for disk in $(disk_list); do
@@ -210,16 +220,6 @@ function get_serials {
 }
 
 ################## DiskPrep Functions ##################-------------------------------------------------------------------------------------
-
-function unmount_disks {
-    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
-        echo -e "${b_yellow}Found mounted disk(s). Unmounting...${clear}"; echo
-        umount -f /media/"$SUDO_USER"/*
-    fi
-    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
-        echo -e "${b_yellow}Error: Unmounting disk(s) failed. Exiting...${clear}"; echo; exit 1
-    fi
-}
 
 function get_label {
     while [ -z "$valid_label" ] ; do
