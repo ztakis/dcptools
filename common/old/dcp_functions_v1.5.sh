@@ -117,14 +117,6 @@ function automount_disks {
     done; echo
 }
 
-function mount_disks {
-    echo -e "${b_blue}Mounting disks...${clear}"
-    for disk in $(disk_list); do
-        mkdir /media/"${SUDO_USER}"/"$disk"1
-        mount -t auto -o no_prefetch_block_bitmaps  /dev/"$disk"1 /media/"${SUDO_USER}"/"$disk"1
-    done; echo
-}
-
 function destination_check {
     if [ -z "$(find /media/"$SUDO_USER"/* -prune -type d 2>/dev/null)" ]; then
     # if [ -z "$(find /media/"$USER"/* -prune -type d 2>/dev/null)" ]; then
@@ -703,12 +695,7 @@ function hashcheck_main {
 function automount_main {
     root_check
     automount_disks
-}
 
-function mount_main {
-    root_check
-    unmount_disks
-    mount_disks
 }
 
 function getserials_main {
