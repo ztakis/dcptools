@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.8
+version=1.7
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
@@ -111,38 +111,6 @@ function automount_disks {
     done; echo
 }
 
-function mount_usb {
-    udevadm info -q path -n /dev/sd*1 | grep usb | awk 'BEGIN {FS = "[/]"} {print $(NF-6), $NF}' | \
-    awk 'BEGIN {FS = "[-: ]"} {print $1, $2, $4}' | while IFS=' ' read -r usb_bus usb_port diskpart
-    do
-        echo Mounting /dev/"$diskpart" to /mnt/usb_b"$usb_bus"_p"$usb_port"
-        if [ ! -d /mnt/usb_b"$usb_bus"_p"$usb_port" ]; then mkdir /mnt/usb_b"$usb_bus"_p"$usb_port"; fi
-        mount -t auto /dev/"$diskpart" /mnt/usb_b"$usb_bus"_p"$usb_port"
-    done
-}
-
-function usb_dest_check {
-    if [ -z "$(find /media/"$SUDO_USER"/* -prune -type d 2>/dev/null)" ]; then
-        echo -e "${b_yellow}Error: No destination disks found in:${clear} /media/$SUDO_USER"; echo
-        echo -e "${b_blue}Try to automount ?${clear}"
-        confirm_t $delay
-        automount_disks
-        sleep 1
-    fi
-}
-
-function get_usb_dest {
-    usb_dest_check
-    mapfile -t usb_list < <(find /media/"$SUDO_USER"/* -prune -type d | sort -V)
-    usb_count=${#usb_list[@]}
-    disk_counter=$usb_count
-    for ((p=0; p<usb_count; p++)); do prev+=(0); done
-    for ((r=0; r<usb_count; r++)); do rem+=(0); done
-    echo -e "${b_yellow}Destination disks found in:${clear} /media/$SUDO_USER"
-    for bname in "${usb_list[@]}"; do basename "$bname"; done
-    echo -e "${b_yellow}Total disks found:${clear} $usb_count"; echo
-}
-
 function destination_check {
     if [ -z "$(find /media/"$SUDO_USER"/* -prune -type d 2>/dev/null)" ]; then
     # if [ -z "$(find /media/"$USER"/* -prune -type d 2>/dev/null)" ]; then
@@ -165,8 +133,6 @@ function get_destinations {
     for bname in "${usb_list[@]}"; do basename "$bname"; done
     echo -e "${b_yellow}Total disks found:${clear} $usb_count"; echo
 }
-
-
 
 function get_threads {
     while [ -z "$valid_threads" ] ; do
