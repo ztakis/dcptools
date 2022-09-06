@@ -122,23 +122,27 @@ function mount_usb {
 }
 
 function usb_dest_check {
-    if [ -z "$(find /media/"$SUDO_USER"/* -prune -type d 2>/dev/null)" ]; then
-        echo -e "${b_yellow}Error: No destination disks found in:${clear} /media/$SUDO_USER"; echo
-        echo -e "${b_blue}Try to automount ?${clear}"
+    check_mnt_usb=$(mount -l | grep /mnt/usb_)
+    if  [ -z "$check_mnt_usb" ]; then
+        echo -e "${b_yellow}Error: No usb destination disks found in:${clear} /mnt/"; echo
+        echo -e "${b_blue}Try to mount ?${clear}"
         confirm_t $delay
-        automount_disks
+        umount /media/"$SUDO_USER"/* 2>/dev/null
+        mount_usb
         sleep 1
+    # else echo "Nothing to do"
     fi
 }
 
 function get_usb_dest {
     usb_dest_check
-    mapfile -t usb_list < <(find /media/"$SUDO_USER"/* -prune -type d | sort -V)
+    mapfile -t usb_list < <(mount -l | grep /mnt/usb_ | awk '{print $3}')
+    # echo "${usb_list[*]}"
     usb_count=${#usb_list[@]}
     disk_counter=$usb_count
     for ((p=0; p<usb_count; p++)); do prev+=(0); done
     for ((r=0; r<usb_count; r++)); do rem+=(0); done
-    echo -e "${b_yellow}Destination disks found in:${clear} /media/$SUDO_USER"
+    echo -e "${b_yellow}Destination disks found in:${clear} /mnt/"
     for bname in "${usb_list[@]}"; do basename "$bname"; done
     echo -e "${b_yellow}Total disks found:${clear} $usb_count"; echo
 }
