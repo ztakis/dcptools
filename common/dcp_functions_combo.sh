@@ -107,8 +107,10 @@ function unmount_disks_old {
 function unmount_disks {
     if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
         echo -e "${b_yellow}Found mounted disk(s). Unmounting...${clear}"; echo
-        umount -f /mnt/usb_*
+        umount -f /mnt/usb_* 2>/dev/null
+        umount -f /media/"$SUDO_USER"/* 2>/dev/null
     fi
+    sleep 1
     if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
         echo -e "${b_yellow}Error: Unmounting disk(s) failed. Exiting...${clear}"; echo; exit 1
     fi
@@ -839,17 +841,17 @@ function init_cp {
     init_disk
     diskprep_end
     automount_disks
-    # mount_usb
     show_disks
     confirm_t $long_delay
     get_destinations
-    # get_usb_dest
     copy2all
     byte_check
     get_serials
     error_log_check
-    unmount_disks
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
+    echo; echo -e "${b_blue}Please wait for copy to finish before unmounting"; echo
+    confirm_t $long_delay
+    unmount_disks
 }
 
 function init_cp_b {
