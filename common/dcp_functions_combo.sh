@@ -877,8 +877,10 @@ function init_cp_b {
     byte_check
     get_serials
     error_log_check
-    unmount_disks
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
+    echo; echo -e "${b_blue}Please wait for copy to finish before unmounting"; echo
+    confirm_t $long_delay
+    unmount_disks
 }
 
 function init_cp_hsck {
@@ -906,8 +908,10 @@ function init_cp_hsck {
     get_serials
     error_log_check
     error_log_check -h
-    unmount_disks
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
+    echo; echo -e "${b_blue}Please wait for copy to finish before unmounting"; echo
+    confirm_t $long_delay
+    unmount_disks
 }
 
 function init_cp_hsck_b {
@@ -936,8 +940,10 @@ function init_cp_hsck_b {
     get_serials
     error_log_check
     error_log_check -h
-    unmount_disks
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
+    echo; echo -e "${b_blue}Please wait for copy to finish before unmounting"; echo
+    confirm_t $long_delay
+    unmount_disks
 }
 
 function more_menu {
