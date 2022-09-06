@@ -7,7 +7,7 @@ source /opt/dcptools/common/local_config
 
 # short_delay=5
 delay=10
-long_delay=60
+long_delay=30
 # extra_long_delay=300
 
 #######################  Colors  #######################
@@ -849,7 +849,7 @@ function init_cp {
     get_serials
     error_log_check
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
-    echo; echo -e "${b_blue}Please wait for copy to finish before unmounting"; echo
+    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
     confirm_t $long_delay
     unmount_disks
 }
@@ -878,7 +878,7 @@ function init_cp_b {
     get_serials
     error_log_check
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
-    echo; echo -e "${b_blue}Please wait for copy to finish before unmounting"; echo
+    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
     confirm_t $long_delay
     unmount_disks
 }
@@ -909,7 +909,7 @@ function init_cp_hsck {
     error_log_check
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
-    echo; echo -e "${b_blue}Please wait for copy to finish before unmounting"; echo
+    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
     confirm_t $long_delay
     unmount_disks
 }
@@ -941,7 +941,7 @@ function init_cp_hsck_b {
     error_log_check
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
-    echo; echo -e "${b_blue}Please wait for copy to finish before unmounting"; echo
+    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
     confirm_t $long_delay
     unmount_disks
 }
