@@ -107,10 +107,10 @@ function unmount_disks_old {
 function unmount_disks {
     if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
         echo -e "${b_yellow}Found mounted disk(s). Unmounting...${clear}"; echo
-        umount -f /mnt/usb_* 2>/dev/null
-        umount -f /media/"$SUDO_USER"/* 2>/dev/null
+        umount /mnt/usb_* 2>/dev/null
+        umount /media/"$SUDO_USER"/* 2>/dev/null
     fi
-    sleep 1
+    sleep 5
     if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
         echo -e "${b_yellow}Error: Unmounting disk(s) failed. Exiting...${clear}"; echo; exit 1
     fi
