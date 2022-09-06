@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.7
+version=1.8
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
@@ -94,7 +94,7 @@ function no_disk_check {
     fi
 }
 
-function unmount_disks {
+function unmount_disks_old {
     if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
         echo -e "${b_yellow}Found mounted disk(s). Unmounting...${clear}"; echo
         umount -f /media/"$SUDO_USER"/*
@@ -104,14 +104,61 @@ function unmount_disks {
     fi
 }
 
-function automount_disks {
+function unmount_disks {
+    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
+        echo -e "${b_yellow}Found mounted disk(s). Unmounting...${clear}"; echo
+        umount -f /mnt/usb_*
+    fi
+    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
+        echo -e "${b_yellow}Error: Unmounting disk(s) failed. Exiting...${clear}"; echo; exit 1
+    fi
+}
+
+function automount_disks_old {
     echo -e "${b_blue}Automounting disks...${clear}"
     for disk in $(disk_list); do
         sudo -u "${SUDO_USER}" udisksctl mount --options noatime -b /dev/"$disk"1
     done; echo
 }
 
+function automount_disks {
+    echo -e "${b_blue}Mounting disks...${clear}"
+    udevadm info -q path -n /dev/sd*1 | grep usb | awk 'BEGIN {FS = "[/]"} {print $(NF-6), $NF}' | \
+    awk 'BEGIN {FS = "[-: ]"} {print $1, $2, $4}' | while IFS=' ' read -r usb_bus usb_port diskpart
+    do
+        echo Mounting /dev/"$diskpart" to /mnt/usb_b"$usb_bus"_p"$usb_port"
+        if [ ! -d /mnt/usb_b"$usb_bus"_p"$usb_port" ]; then mkdir /mnt/usb_b"$usb_bus"_p"$usb_port"; fi
+        mount -t auto -o no_prefetch_block_bitmaps /dev/"$diskpart" /mnt/usb_b"$usb_bus"_p"$usb_port"
+    done
+}
+
 function destination_check {
+    check_mnt_usb=$(mount -l | grep /mnt/usb_)
+    if  [ -z "$check_mnt_usb" ]; then
+        echo -e "${b_yellow}Error: No usb destination disks found in:${clear} /mnt/"; echo
+        echo -e "${b_blue}Try to mount ?${clear}"
+        confirm_t $delay
+        umount /media/"$SUDO_USER"/* 2>/dev/null
+        mount_usb
+        sleep 1
+    # else echo "Nothing to do"
+    fi
+}
+
+function get_destinations {
+    destination_check
+    mapfile -t usb_list < <(mount -l | grep /mnt/usb_ | awk '{print $3}')
+    # echo "${usb_list[*]}"
+    usb_count=${#usb_list[@]}
+    disk_counter=$usb_count
+    for ((p=0; p<usb_count; p++)); do prev+=(0); done
+    for ((r=0; r<usb_count; r++)); do rem+=(0); done
+    echo -e "${b_yellow}Destination disks found in:${clear} /mnt/"
+    for bname in "${usb_list[@]}"; do basename "$bname"; done
+    echo -e "${b_yellow}Total disks found:${clear} $usb_count"; echo
+}
+
+function destination_check_old {
     if [ -z "$(find /media/"$SUDO_USER"/* -prune -type d 2>/dev/null)" ]; then
     # if [ -z "$(find /media/"$USER"/* -prune -type d 2>/dev/null)" ]; then
         echo -e "${b_yellow}Error: No destination disks found in:${clear} /media/$SUDO_USER"; echo
@@ -122,7 +169,7 @@ function destination_check {
     fi
 }
 
-function get_destinations {
+function get_destinations_old {
     destination_check
     mapfile -t usb_list < <(find /media/"$SUDO_USER"/* -prune -type d | sort -V)
     usb_count=${#usb_list[@]}
@@ -557,7 +604,7 @@ function cleanup {
     echo; echo -e "${b_red}Aborting...${clear}"; echo; exit
 }
 
-function hashcheck {
+function hashcheck_old {
     for source in "${src_path_list[@]}"; do
         start=$SECONDS
         make_source_hashes
@@ -574,6 +621,35 @@ function hashcheck {
                 if (( j % threads == 0 )); then wait; fi; ((j++))
             fi
             k=$(echo "$dest" | grep -o -P "(?<=/media/$SUDO_USER/).*(?=/$dcp/)")
+            # sha1sum -c "$temp"/hashes.sha1 | tee -a "$temp"/"$(date '+%y%m%d%H%M')_$k".log | grep "FAILED" &
+            sha1sum -c "$temp"/hashes.sha1 2>> "$temp"/"$(date '+%y%m%d%H%M')"_"$k"_error.log | tee -a "$temp"/"$(date '+%y%m%d%H%M')"_"$k".log | grep "FAILED" &
+        done
+        wait &&
+        sleep 1; kill -9 "$SPIN_PID"; echo; echo; sleep 1
+        rm -f "$temp"/hashes.sha1
+        error_log_check -h
+        echo -e "${b_green}Finished in:${clear}  $(date -ud @$(( SECONDS - start )) +%T)"; echo
+        echo
+    done
+}
+
+function hashcheck {
+    for source in "${src_path_list[@]}"; do
+        start=$SECONDS
+        make_source_hashes
+        dcp=$(basename "$source")
+        echo -en "${b_yellow}Hash checking:${clear} $dcp"; echo
+        echo "----------------------------------------------------------------------------------------"
+        spinner &
+        SPIN_PID=$!
+        disown
+        trap cleanup SIGINT
+        for dest in /mnt/usb_*/"$dcp"/; do
+            cd "$dest" || exit 1
+            if [ "$1" == "-b" ]; then
+                if (( j % threads == 0 )); then wait; fi; ((j++))
+            fi
+            k=$(echo "$dest" | grep -o -P "(?<=/mnt/).*(?=/$dcp/)")
             # sha1sum -c "$temp"/hashes.sha1 | tee -a "$temp"/"$(date '+%y%m%d%H%M')_$k".log | grep "FAILED" &
             sha1sum -c "$temp"/hashes.sha1 2>> "$temp"/"$(date '+%y%m%d%H%M')"_"$k"_error.log | tee -a "$temp"/"$(date '+%y%m%d%H%M')"_"$k".log | grep "FAILED" &
         done
@@ -763,13 +839,16 @@ function init_cp {
     init_disk
     diskprep_end
     automount_disks
+    # mount_usb
     show_disks
     confirm_t $long_delay
     get_destinations
+    # get_usb_dest
     copy2all
     byte_check
     get_serials
     error_log_check
+    unmount_disks
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
 }
 
@@ -796,6 +875,7 @@ function init_cp_b {
     byte_check
     get_serials
     error_log_check
+    unmount_disks
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
 }
 
@@ -824,6 +904,7 @@ function init_cp_hsck {
     get_serials
     error_log_check
     error_log_check -h
+    unmount_disks
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
 }
 
@@ -853,6 +934,7 @@ function init_cp_hsck_b {
     get_serials
     error_log_check
     error_log_check -h
+    unmount_disks
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
 }
 

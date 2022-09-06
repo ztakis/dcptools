@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source common/dcp_functions.sh
+source common/dcp_functions_combo.sh
 
 echo; echo -e "${b_blue}dcp_combo ${clear}${b_green}v$version${clear}"; echo
 
