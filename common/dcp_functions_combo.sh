@@ -244,7 +244,7 @@ function get_serials {
         mountpoint=$(echo "$u" | awk '{print $2}')
         printf "%s\t%s\t\t%s\n" "$dev" "$serial" "$mountpoint" >> $temp/serials.txt
     done
-    sort -k 3 $temp/serials.txt | cat
+    sort -k 3 -V $temp/serials.txt | cat
     rm $temp/serials.txt
     echo
 }
