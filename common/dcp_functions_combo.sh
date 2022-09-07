@@ -152,7 +152,7 @@ function destination_check {
 
 function get_destinations {
     destination_check
-    mapfile -t usb_list < <(mount -l | grep /mnt/usb_ | awk '{print $3}')
+    mapfile -t usb_list < <(mount -l | grep /mnt/usb_ | awk '{print $3}' | sort -V)
     # echo "${usb_list[*]}"
     usb_count=${#usb_list[@]}
     disk_counter=$usb_count
