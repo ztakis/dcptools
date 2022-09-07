@@ -7,7 +7,7 @@ source /opt/dcptools/common/local_config
 
 # short_delay=5
 delay=10
-long_delay=30
+long_delay=120
 # extra_long_delay=300
 
 #######################  Colors  #######################
@@ -847,14 +847,14 @@ function init_cp {
     diskprep_end
     automount_disks
     show_disks
-    confirm_t $long_delay
+    confirm_t $delay
     get_destinations
     copy2all
     byte_check
     get_serials
     error_log_check
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
-    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
+    echo; echo -e "${b_blue}Please wait until no disk leds are blinking before unmounting"; echo
     confirm_t $long_delay
     unmount_disks
 }
@@ -876,14 +876,14 @@ function init_cp_b {
     diskprep_end
     automount_disks
     show_disks
-    confirm_t $long_delay
+    confirm_t $delay
     get_destinations
     copy2all_b
     byte_check
     get_serials
     error_log_check
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
-    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
+    echo; echo -e "${b_blue}Please wait until no disk leds are blinking before unmounting"; echo
     confirm_t $long_delay
     unmount_disks
 }
@@ -904,9 +904,10 @@ function init_cp_hsck {
     diskprep_end
     automount_disks
     show_disks
-    confirm_t $long_delay
+    confirm_t $delay
     get_destinations
     copy2all
+    echo; echo -e "${b_blue}Please wait until no disk leds are blinking"; echo
     confirm_t $long_delay
     echo
     hashcheck
@@ -915,7 +916,7 @@ function init_cp_hsck {
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
     echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
-    confirm_t $long_delay
+    confirm_t $delay
     unmount_disks
 }
 
@@ -936,9 +937,10 @@ function init_cp_hsck_b {
     diskprep_end
     automount_disks
     show_disks
-    confirm_t $long_delay
+    confirm_t $delay
     get_destinations
     copy2all_b
+    echo; echo -e "${b_blue}Please wait until no disk leds are blinking"; echo
     confirm_t $long_delay
     echo
     hashcheck -b
@@ -947,7 +949,7 @@ function init_cp_hsck_b {
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
     echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
-    confirm_t $long_delay
+    confirm_t $delay
     unmount_disks
 }
 
