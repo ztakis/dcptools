@@ -242,8 +242,10 @@ function get_serials {
         dev=$(echo "$u" | awk '{print $1}')
         serial=$(smartctl -i "$dev" | grep 'Serial' | awk '{print $3}')
         mountpoint=$(echo "$u" | awk '{print $2}')
-        printf "%s\t%s\t\t%s\n" "$dev" "$serial" "$mountpoint"
+        printf "%s\t%s\t\t%s\n" "$dev" "$serial" "$mountpoint" >> $temp/serials.txt
     done
+    sort -k 3 $temp/serials.txt | cat
+    rm $temp/serials.txt
     echo
 }
 
