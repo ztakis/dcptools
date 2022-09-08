@@ -144,7 +144,7 @@ function destination_check {
         echo -e "${b_blue}Try to mount ?${clear}"
         confirm_t $delay
         umount /media/"$SUDO_USER"/* 2>/dev/null
-        mount_usb
+        automount_disks
         sleep 1
     # else echo "Nothing to do"
     fi
