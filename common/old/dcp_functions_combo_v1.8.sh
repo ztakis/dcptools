@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.9
+version=1.8
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
