@@ -959,7 +959,7 @@ function more_menu {
     echo "------------------------"
     export COLUMNS=20
     select opt in "Initialize + copy in batches" "Initialize + copy + hashcheck in batches" \
-    "DiskPrep" "CopyDCP" "Hashcheck" "Main menu" "Exit"
+    "DiskPrep" "CopyDCP" "Hashcheck" "Set permissions" "Get serials" "Main menu" "Exit"
         do
             case $opt in
                 "Initialize + copy in batches") echo; echo -e "${b_yellow}$opt${clear}"; init_cp_b; break;;
@@ -967,6 +967,8 @@ function more_menu {
                 "DiskPrep") echo; echo -e "${b_yellow}$opt${clear}"; confirm; diskprep_main; echo; exit;;
                 "CopyDCP") echo; echo -e "${b_yellow}$opt${clear}"; confirm; copy_main; echo; exit;;
                 "Hashcheck") echo; echo -e "${b_yellow}$opt${clear}"; confirm; hashcheck_main; echo; exit;;
+                "Set permissions") echo; echo -e "${b_yellow}$opt${clear}"; confirm; echo "TBD"; echo; exit;;
+                "Get serials") echo; echo -e "${b_yellow}$opt${clear}"; confirm; echo "TBD"; echo; exit;;
                 "Main menu") echo; echo -e "${b_yellow}$opt${clear}"; main_menu; break;;   # TBD: subnenu
                 "Exit") echo; echo -e "${b_yellow}Bye!${clear}"; echo; exit;;
                 * ) echo "Invalid option"
@@ -979,12 +981,13 @@ function main_menu {
     echo -e "${b_blue}Select to continue:     ${clear}"
     echo "------------------------"
     export COLUMNS=20
-    select opt in "Initialize + copy" "Initialize + copy + hashcheck" "Source hashcheck" "More options" "Exit"
+    select opt in "Initialize + copy" "Initialize + copy + hashcheck" "Source hashcheck" "Mount/Unmount" "More options" "Exit"
         do
             case $opt in
                 "Initialize + copy") echo; echo -e "${b_yellow}$opt${clear}"; init_cp; break;;
                 "Initialize + copy + hashcheck") echo; echo -e "${b_yellow}$opt${clear}"; init_cp_hsck; break;;
                 "Source hashcheck") echo; echo -e "${b_yellow}$opt${clear}"; source_hashcheck; exit;;
+                "Mount/Unmount") echo; echo -e "${b_yellow}$opt${clear}"; mount_menu; exit;;
                 "More options") echo; echo -e "${b_yellow}$opt${clear}"; more_menu; break;;
                 "Exit") echo; echo -e "${b_yellow}Bye!${clear}"; echo; exit;;
                 * ) echo "Invalid option"
