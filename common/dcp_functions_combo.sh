@@ -348,7 +348,7 @@ function label_only {
 
 function diskprep_menu {
     echo "------------------------"
-    echo -e "${b_blue}Select to continue:     ${clear}"
+    echo -e "${b_blue}Select to continue:${clear}"
     echo "------------------------"
     export COLUMNS=20
     select opt in "Initialize all" "Initialize in batches" "Label only" "Exit"
@@ -528,7 +528,7 @@ function copy_to_all_in_batches {
 
 function copy_menu {
     echo "-------------------------"
-    echo -e "${b_blue}Select to continue:     ${clear}"
+    echo -e "${b_blue}Select to continue:${clear}"
     echo "-------------------------"
     export COLUMNS=20
     select opt in "Copy to all" "Copy to all in batches" "Exit"; do
@@ -675,7 +675,7 @@ function bytecheck {
 
 function hashcheck_menu {
     echo "------------------------"
-    echo -e "${b_blue}Select to continue:     ${clear}"
+    echo -e "${b_blue}Select to continue:${clear}"
     echo "------------------------"
     export COLUMNS=20
     select opt in "Source hashcheck" "Hashcheck all" "Hashcheck in batches" "Bytecheck" "Exit"; do
@@ -745,7 +745,7 @@ function set_perms {
 
 function permissions_menu {
     echo "------------------------"
-    echo -e "${b_blue}Select to continue:     ${clear}"
+    echo -e "${b_blue}Select to continue:${clear}"
     echo "------------------------"
     export COLUMNS=20
     select perms in "normal_root" "full_root" "normal_1000" "full_1000" "Exit"
@@ -893,7 +893,7 @@ function init_cp_hsck_b {
 
 function mount_menu {
     echo "------------------------"
-    echo -e "${b_blue}Select to continue:     ${clear}"
+    echo -e "${b_blue}Select to continue:${clear}"
     echo "------------------------"
     export COLUMNS=20
     select opt in "Auto mount" "Usb mount" "Unmount all" "Main menu" "Exit"
@@ -911,7 +911,7 @@ function mount_menu {
 
 function more_menu {
     echo "------------------------"
-    echo -e "${b_blue}Select to continue:     ${clear}"
+    echo -e "${b_blue}Select to continue:${clear}"
     echo "------------------------"
     export COLUMNS=20
     select opt in "Initialize + copy in batches" "Initialize + copy + hashcheck in batches" \
@@ -934,7 +934,7 @@ function more_menu {
 
 function main_menu {
     echo "------------------------"
-    echo -e "${b_blue}Select to continue:     ${clear}"
+    echo -e "${b_blue}Select to continue:${clear}"
     echo "------------------------"
     export COLUMNS=20
     select opt in "Initialize + copy" "Initialize + copy + hashcheck" "Source hashcheck" "Mount/Unmount" "More options" "Exit"
