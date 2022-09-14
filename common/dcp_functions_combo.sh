@@ -953,6 +953,24 @@ function init_cp_hsck_b {
     unmount_disks
 }
 
+function mount_menu {
+    echo "------------------------"
+    echo -e "${b_blue}Select to continue:     ${clear}"
+    echo "------------------------"
+    export COLUMNS=20
+    select opt in "Auto mount" "Usb mount" "Unmount all" "Main menu" "Exit"
+        do
+            case $opt in
+                "Auto mount") echo; echo -e "${b_yellow}$opt${clear}"; confirm; automount_disks_old; break;;
+                "Usb mount") echo; echo -e "${b_yellow}$opt${clear}"; confirm; automount_disks; break;;
+                "Unmount all") echo; echo -e "${b_yellow}$opt${clear}"; confirm; unmount_disks; exit;;
+                "Main menu") echo; echo -e "${b_yellow}$opt${clear}"; main_menu; break;;
+                "Exit") echo; echo -e "${b_yellow}Bye!${clear}"; echo; exit;;
+                * ) echo "Invalid option"
+            esac
+        done
+}
+
 function more_menu {
     echo "------------------------"
     echo -e "${b_blue}Select to continue:     ${clear}"
@@ -967,9 +985,9 @@ function more_menu {
                 "DiskPrep") echo; echo -e "${b_yellow}$opt${clear}"; confirm; diskprep_main; echo; exit;;
                 "CopyDCP") echo; echo -e "${b_yellow}$opt${clear}"; confirm; copy_main; echo; exit;;
                 "Hashcheck") echo; echo -e "${b_yellow}$opt${clear}"; confirm; hashcheck_main; echo; exit;;
-                "Set permissions") echo; echo -e "${b_yellow}$opt${clear}"; confirm; echo "TBD"; echo; exit;;
-                "Get serials") echo; echo -e "${b_yellow}$opt${clear}"; confirm; echo "TBD"; echo; exit;;
-                "Main menu") echo; echo -e "${b_yellow}$opt${clear}"; main_menu; break;;   # TBD: subnenu
+                "Set permissions") echo; echo -e "${b_yellow}$opt${clear}"; confirm; permissions_main "@$"; echo; exit;;
+                "Get serials") echo; echo -e "${b_yellow}$opt${clear}"; confirm; get_serials; echo; exit;;
+                "Main menu") echo; echo -e "${b_yellow}$opt${clear}"; main_menu; break;;
                 "Exit") echo; echo -e "${b_yellow}Bye!${clear}"; echo; exit;;
                 * ) echo "Invalid option"
             esac
