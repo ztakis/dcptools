@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=2.1
+version=2.0
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
@@ -100,6 +100,7 @@ function unmount_disks {
         umount /media/"$SUDO_USER"/* 2>/dev/null
         mapfile -t mntusb < <(grep '/dev/sd' /proc/mounts | grep -Ev $protected_disks | awk '{print $2}')
         for usbmnt in "${mntusb[@]}"; do
+            # echo "Unmounting $usbmnt"
             umount "$usbmnt"
             sleep 1
         done
@@ -137,6 +138,7 @@ function destination_check {
         umount /media/"$SUDO_USER"/* 2>/dev/null
         mount_disks_usb
         sleep 1
+    # else echo "Nothing to do"
     fi
 }
 
@@ -398,6 +400,7 @@ function pre_copy {
     echo -en "${b_blue}Source selected:${clear} $dcp"; echo
     set_source_permissions -n
     source_size=$(du -sb --exclude=lost+found "$source" | cut -f 1)
+    # if [ -z "$(find /media/"$SUDO_USER"/*/"$dcp" -prune -type d 2>/dev/null)" ]; then
     if [ -z "$(find /mnt/usb_*/"$dcp" -prune -type d 2>/dev/null)" ]; then
         first_time=true
     else
@@ -659,6 +662,8 @@ function bytecheck {
         du -sb $default_sources_dir/*/
         echo; echo -e "${b_yellow}Destination disk(s)${clear}"
         echo "-----------------------------------------------------------------"
+        # du -sb --exclude={lost+found/,"System Volume Information"/} /media/$SUDO_USER/*/*/
+        # du -sb --exclude=lost+found/ /media/"$SUDO_USER"/*/*/
         du -sb --exclude=lost+found/ /mnt/usb_*/*/
     else
         sources_dir=$(dirname "$source")
@@ -668,6 +673,7 @@ function bytecheck {
         du -sb "$sources_dir/$dcp"/
         echo; echo -e "${b_yellow}Destination disk(s)${clear}"
         echo "-----------------------------------------------------------------"
+        # du -sb --exclude=lost+found/ /media/"$SUDO_USER"/*/"$dcp"/
         du -sb --exclude=lost+found/ /mnt/usb_*/"$dcp"/
     fi
 }
@@ -729,8 +735,7 @@ function perms {
 function set_perms {
     get_dcp
     if [[ $3 == "-d" ]]; then
-        echo "Destination mode"
-        confirm
+        # dest=$(ls -d /media/"$SUDO_USER"/*/"$dcp_folder")
         dest=$(ls -d /mnt/usb_*/"$dcp_folder")
         echo -e "${b_blue}DCP is: ${clear}""$dcp_folder"
         echo -e "${b_blue}Destnations are: ${clear}"
@@ -924,7 +929,7 @@ function more_menu {
                 "DiskPrep") echo; echo -e "${b_yellow}$opt${clear}"; confirm; diskprep_main; echo; exit;;
                 "CopyDCP") echo; echo -e "${b_yellow}$opt${clear}"; confirm; copy_main; echo; exit;;
                 "Hashcheck") echo; echo -e "${b_yellow}$opt${clear}"; confirm; hashcheck_main; echo; exit;;
-                "Set permissions") echo; echo -e "${b_yellow}$opt${clear}"; confirm; permissions_main "$1"; echo; exit;;
+                "Set permissions") echo; echo -e "${b_yellow}$opt${clear}"; confirm; permissions_main "@$"; echo; exit;;
                 "Get serials") echo; echo -e "${b_yellow}$opt${clear}"; confirm; get_serials; echo; exit;;
                 "Main menu") echo; echo -e "${b_yellow}$opt${clear}"; main_menu; break;;
                 "Exit") echo; echo -e "${b_yellow}Bye!${clear}"; echo; exit;;
@@ -945,7 +950,7 @@ function main_menu {
                 "Initialize + copy + hashcheck") echo; echo -e "${b_yellow}$opt${clear}"; init_cp_hsck; break;;
                 "Source hashcheck") echo; echo -e "${b_yellow}$opt${clear}"; source_hashcheck; exit;;
                 "Mount/Unmount") echo; echo -e "${b_yellow}$opt${clear}"; mount_menu; exit;;
-                "More options") echo; echo -e "${b_yellow}$opt${clear}"; more_menu "$1"; break;;
+                "More options") echo; echo -e "${b_yellow}$opt${clear}"; more_menu; break;;
                 "Exit") echo; echo -e "${b_yellow}Bye!${clear}"; echo; exit;;
                 * ) echo "Invalid option"
             esac
@@ -955,5 +960,5 @@ function main_menu {
 function combo_main {
     root_check
     error_log_check -p
-    main_menu "$1"
+    main_menu
 }
