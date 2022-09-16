@@ -100,7 +100,9 @@ function unmount_disks {
         umount /media/"$SUDO_USER"/* 2>/dev/null
         mapfile -t mntusb < <(grep '/dev/sd' /proc/mounts | grep -Ev $protected_disks | awk '{print $2}')
         for usbmnt in "${mntusb[@]}"; do
+            # echo "Unmounting $usbmnt"
             umount "$usbmnt"
+            sleep 1
         done
     fi
     sleep 1
@@ -899,8 +901,8 @@ function mount_menu {
     select opt in "Auto mount" "Usb mount" "Unmount all" "Main menu" "Exit"
         do
             case $opt in
-                "Auto mount") echo; echo -e "${b_yellow}$opt${clear}"; confirm; automount_disks; break;;
-                "Usb mount") echo; echo -e "${b_yellow}$opt${clear}"; confirm; mount_disks_usb; break;;
+                "Auto mount") echo; echo -e "${b_yellow}$opt${clear}"; confirm; unmount_disks; automount_disks; break;;
+                "Usb mount") echo; echo -e "${b_yellow}$opt${clear}"; confirm; unmount_disks; mount_disks_usb; break;;
                 "Unmount all") echo; echo -e "${b_yellow}$opt${clear}"; confirm; unmount_disks; exit;;
                 "Main menu") echo; echo -e "${b_yellow}$opt${clear}"; main_menu; break;;
                 "Exit") echo; echo -e "${b_yellow}Bye!${clear}"; echo; exit;;
