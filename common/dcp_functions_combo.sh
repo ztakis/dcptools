@@ -101,7 +101,6 @@ function unmount_disks {
         mapfile -t mntusb < <(grep '/dev/sd' /proc/mounts | grep -Ev $protected_disks | awk '{print $2}')
         for usbmnt in "${mntusb[@]}"; do
             umount "$usbmnt"
-            sleep 1
         done
     fi
     sleep 1
