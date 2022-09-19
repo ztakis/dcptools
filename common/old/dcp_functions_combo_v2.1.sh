@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=2.2
+version=2.1
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
@@ -31,8 +31,8 @@ function confirm_t {
     for (( i=$1; i>=0; i--)); do
         echo -en "\r${b_blue}Continue in${clear} $i ${b_blue}sec${clear} (y/n): "
         read -t 1 -n 1 -re reply
-        if [[ $reply == [yY] ]]; then break
-            # echo -n "Continuing..."; break
+        if [[ $reply == [yY] ]]; then
+            echo -n "Continuing..."; break
         elif [[ $reply == [nN] ]]; then
             echo "Exiting..."; echo; exit 1
         fi
@@ -597,7 +597,6 @@ function hashcheck {
             # sha1sum -c "$temp"/hashes.sha1 | tee -a "$temp"/"$(date '+%y%m%d%H%M')_$k".log | grep "FAILED" &
             sha1sum -c "$temp"/hashes.sha1 2>> "$temp"/"$(date '+%y%m%d%H%M')"_"$k"_error.log | tee -a "$temp"/"$(date '+%y%m%d%H%M')"_"$k".log | grep "FAILED" &
         done
-        cd $temp || exit 1
         wait &&
         sleep 1; kill -9 "$SPIN_PID"; echo; echo; sleep 1
         rm -f "$temp"/hashes.sha1
@@ -854,6 +853,8 @@ function init_cp_hsck {
     error_log_check
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
+    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
+    confirm_t $delay
     unmount_disks
 }
 
@@ -885,6 +886,8 @@ function init_cp_hsck_b {
     error_log_check
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
+    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
+    confirm_t $delay
     unmount_disks
 }
 
