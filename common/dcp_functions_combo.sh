@@ -854,7 +854,7 @@ function init_cp_hsck {
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
     echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
-    confirm_t $delay
+    confirm_t $long_delay
     unmount_disks
 }
 
@@ -887,7 +887,7 @@ function init_cp_hsck_b {
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
     echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
-    confirm_t $delay
+    confirm_t $long_delay
     unmount_disks
 }
 
