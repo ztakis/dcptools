@@ -101,6 +101,8 @@ function unmount_disks {
         mapfile -t mntusb < <(grep '/dev/sd' /proc/mounts | grep -Ev $protected_disks | awk '{print $2}')
         for usbmnt in "${mntusb[@]}"; do
             umount "$usbmnt"
+            # umount -l "$usbmnt"    # lazy unmount
+            sleep 0.250
         done
     fi
     sleep 1
@@ -853,8 +855,8 @@ function init_cp_hsck {
     error_log_check
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
-    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
-    confirm_t $long_delay
+    # echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
+    # confirm_t $long_delay
     unmount_disks
 }
 
@@ -886,8 +888,8 @@ function init_cp_hsck_b {
     error_log_check
     error_log_check -h
     echo; echo -e "${b_green}Total time elapsed:${clear}  $(date -ud @$(( SECONDS - master_start )) +%T)"; echo
-    echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
-    confirm_t $long_delay
+    # echo; echo -e "${b_blue}Please wait a while before unmounting"; echo
+    # confirm_t $long_delay
     unmount_disks
 }
 
