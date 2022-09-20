@@ -656,7 +656,7 @@ function bytecheck {
     if [ -z "$source" ]; then
         echo; echo; echo -e "${b_yellow}DCP source(s)${clear}"
         echo "-----------------------------------------------------------------"
-        du -sb $default_sources_dir/*/
+        du -sb "$default_sources_dir"/*/
         echo; echo -e "${b_yellow}Destination disk(s)${clear}"
         echo "-----------------------------------------------------------------"
         du -sb --exclude=lost+found/ /mnt/usb_*/*/
