@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=2.4
+version=2.3
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
@@ -366,6 +366,7 @@ function diskprep_main {
     root_check
     no_disk_check
     diskprep_menu
+    mount_disks_usb
     show_disks
 }
 
@@ -549,7 +550,6 @@ function copy_main {
     get_serials
     error_log_check
     echo
-    unmount_disks
 }
 
 ################## HashCheck Functions ##################-------------------------------------------------------------------------------------------------------
@@ -692,7 +692,6 @@ function hashcheck_menu {
 function hashcheck_main {
     root_check
     hashcheck_menu
-    unmount_disks
 }
 
 ################# Utilities Functions ##################
@@ -704,11 +703,7 @@ function automount_main {
 
 function getserials_main {
     root_check
-    destination_check
-    echo
     get_serials
-    echo
-    unmount_disks
 }
 
 ################# SetPerms Functions ##################
@@ -926,7 +921,7 @@ function more_menu {
                 "CopyDCP") echo; echo -e "${b_yellow}$opt${clear}"; confirm; copy_main; echo; exit;;
                 "Hashcheck") echo; echo -e "${b_yellow}$opt${clear}"; confirm; hashcheck_main; echo; exit;;
                 "Set permissions") echo; echo -e "${b_yellow}$opt${clear}"; confirm; permissions_main "$1"; echo; exit;;
-                "Get serials") echo; echo -e "${b_yellow}$opt${clear}"; confirm; getserials_main; echo; exit;;
+                "Get serials") echo; echo -e "${b_yellow}$opt${clear}"; confirm; get_serials; echo; exit;;
                 "Main menu") echo; echo -e "${b_yellow}$opt${clear}"; main_menu; break;;
                 "Exit") echo; echo -e "${b_yellow}Bye!${clear}"; echo; exit;;
                 * ) echo "Invalid option"
