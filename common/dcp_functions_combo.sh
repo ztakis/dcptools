@@ -57,7 +57,7 @@ function spinner {
 }
 
 function disk_list {
-    lsblk | grep disk | awk '{print $1}' | grep -Ev $protected_disks | sort
+    lsblk | grep disk | awk '{print $1}' | grep -Ev "$protected_disks" | sort
 }
 
 function root_check {
@@ -74,15 +74,15 @@ function error_log_check {
             fi
         done
     elif [ "$1" == "-p" ]; then
-        if [ -f $temp/error.log ]; then
-            if [ -s $temp/error.log ]; then
+        if [ -f "$temp"/error.log ]; then
+            if [ -s "$temp"/error.log ]; then
                 echo -e "${b_yellow}Previous error.log not empty! Delete?${clear}"
-                confirm; rm $temp/error.log
-            else rm $temp/error.log
+                confirm; rm "$temp"/error.log
+            else rm "$temp"/error.log
             fi
         fi
     else
-        if [ -s $temp/error.log ]; then
+        if [ -s "$temp"/error.log ]; then
             echo; echo -e "${b_red}Errors reported while copying! Check error.log for details${clear}"
         fi
     fi
@@ -95,16 +95,16 @@ function no_disk_check {
 }
 
 function unmount_disks {
-    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
+    if grep '/dev/sd' /proc/mounts | grep -Evq "$protected_disks"; then
         echo -e "${b_yellow}Found mounted disk(s). Unmounting...${clear}"; echo
         umount /media/"$SUDO_USER"/* 2>/dev/null
-        mapfile -t mntusb < <(grep '/dev/sd' /proc/mounts | grep -Ev $protected_disks | awk '{print $2}')
+        mapfile -t mntusb < <(grep '/dev/sd' /proc/mounts | grep -Ev "$protected_disks" | awk '{print $2}')
         for usbmnt in "${mntusb[@]}"; do
             umount "$usbmnt"
         done
     fi
     sleep 1
-    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
+    if grep '/dev/sd' /proc/mounts | grep -Evq "$protected_disks"; then
         echo -e "${b_yellow}Error: Unmounting disk(s) failed. Exiting...${clear}"; echo; exit 1
     fi
 }
@@ -201,17 +201,17 @@ function byte_check {
 }
 
 function get_serials {
-    mapfile -t auto_mounted < <(grep '/dev/sd' /proc/self/mounts | grep -Ev $protected_disks)
+    mapfile -t auto_mounted < <(grep '/dev/sd' /proc/self/mounts | grep -Ev "$protected_disks")
     printf "%s\t\t%s\t\t\t%s\n" "DISK" "SERIAL" "MOUNTPOINT"
     echo "-----------------------------------------------------------------"
     for u in "${auto_mounted[@]}"; do
         dev=$(echo "$u" | awk '{print $1}')
         serial=$(smartctl -i "$dev" | grep 'Serial' | awk '{print $3}')
         mountpoint=$(echo "$u" | awk '{print $2}')
-        printf "%s\t%s\t\t%s\n" "$dev" "$serial" "$mountpoint" >> $temp/serials.txt
+        printf "%s\t%s\t\t%s\n" "$dev" "$serial" "$mountpoint" >> "$temp"/serials.txt
     done
-    sort -k 3 -V $temp/serials.txt | cat
-    rm $temp/serials.txt
+    sort -k 3 -V "$temp"/serials.txt | cat
+    rm "$temp"/serials.txt
     echo
 }
 
@@ -263,8 +263,8 @@ function diskprep_end {
 
 function show_disks {
     echo -e "${b_blue}Showing disk list:${clear}"
-    lsblk -o name,type,size,label,fstype,mountpoint | grep -Ev $protected_disks
-    parts_num=$(lsblk -ln | grep -Ev $protected_disks | grep -c part)
+    lsblk -o name,type,size,label,fstype,mountpoint | grep -Ev "$protected_disks"
+    parts_num=$(lsblk -ln | grep -Ev "$protected_disks" | grep -c part)
     echo; echo -e "${b_blue}Total disks found:${clear} $parts_num"; echo
 }
 
@@ -475,11 +475,11 @@ function copy2all {
         start=$SECONDS
         if [ "$first_time" == true ]; then
             for dest in "${usb_list[@]}"; do
-                cp -rp "$source" "$dest/" 2>> $temp/error.log &
+                cp -rp "$source" "$dest/" 2>> "$temp"/error.log &
             done
         elif [ "$first_time" == false ]; then
             for dest in "${usb_list[@]}"; do
-                rsync -aq "$source" "$dest/" 2>> $temp/error.log &
+                rsync -aq "$source" "$dest/" 2>> "$temp"/error.log &
             done
         fi
         multi_bars
@@ -491,13 +491,13 @@ function batch_copy {
         for dest in "${usb_list[@]}"; do
             if ((c % threads == 0)); then wait; fi
             ((c++))
-            cp -rp "$source" "$dest/" 2>> $temp/error.log &
+            cp -rp "$source" "$dest/" 2>> "$temp"/error.log &
         done
     elif [ "$1" == false ]; then
         for dest in "${usb_list[@]}"; do
             if ((c % threads == 0)); then wait; fi
             ((c++))
-            rsync -aq "$source" "$dest/" 2>> $temp/error.log &
+            rsync -aq "$source" "$dest/" 2>> "$temp"/error.log &
         done
     fi
 }
@@ -597,7 +597,7 @@ function hashcheck {
             # sha1sum -c "$temp"/hashes.sha1 | tee -a "$temp"/"$(date '+%y%m%d%H%M')_$k".log | grep "FAILED" &
             sha1sum -c "$temp"/hashes.sha1 2>> "$temp"/"$(date '+%y%m%d%H%M')"_"$k"_error.log | tee -a "$temp"/"$(date '+%y%m%d%H%M')"_"$k".log | grep "FAILED" &
         done
-        cd $temp || exit 1
+        cd "$temp" || exit 1
         wait &&
         sleep 1; kill -9 "$SPIN_PID"; echo; echo; sleep 1
         rm -f "$temp"/hashes.sha1
@@ -656,7 +656,7 @@ function bytecheck {
     if [ -z "$source" ]; then
         echo; echo; echo -e "${b_yellow}DCP source(s)${clear}"
         echo "-----------------------------------------------------------------"
-        du -sb $default_sources_dir/*/
+        du -sb "$default_sources_dir"/*/
         echo; echo -e "${b_yellow}Destination disk(s)${clear}"
         echo "-----------------------------------------------------------------"
         du -sb --exclude=lost+found/ /mnt/usb_*/*/
