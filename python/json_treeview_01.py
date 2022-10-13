@@ -9,6 +9,7 @@ import json
 
 import sys
 sys.path.insert(0, '/opt/dcptools/common')
+# sys.path.append('/opt/dcptools/common')
 from local_trims import trim_start, trim_end
 
 os.system('rm /opt/dcptools/temp/lsblk_all.json')
