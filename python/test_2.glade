@@ -32,7 +32,7 @@
             <signal name="pressed" handler="onButtonPressed" swapped="no"/>
           </object>
           <packing>
-            <property name="y">25</property>
+            <property name="y">20</property>
           </packing>
         </child>
         <child>
@@ -49,7 +49,7 @@
             <property name="label" translatable="yes">Hello World</property>
             <attributes>
               <attribute name="foreground" value="#3333d1d17a7a"/>
-              <attribute name="background" value="#000000000000"/>
+              <!-- <attribute name="background" value="#000000000000"/> -->
             </attributes>
           </object>
           <packing>
