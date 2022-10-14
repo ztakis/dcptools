@@ -19,7 +19,6 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="double-buffered">False</property>
             <property name="border-width">1</property>
             <property name="use-stock">True</property>
             <signal name="pressed" handler="onButtonPressed" swapped="no"/>

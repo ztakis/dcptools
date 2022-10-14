@@ -15,7 +15,7 @@ class Handler:
 
 
 builder = Gtk.Builder()
-builder.add_from_file("test_1.glade")
+builder.add_from_file("test_2.glade")
 builder.connect_signals(Handler())
 
 window = builder.get_object("window1")
