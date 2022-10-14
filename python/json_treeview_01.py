@@ -58,7 +58,7 @@ for i in islice(disks['blockdevices'], trim_start, len(disks['blockdevices'])-tr
     i['children'][0]['mountpoint'],
     i['children'][0]['label'])
     disk_list.append([disk.name, disk.path,  disk.hotplug, disk.model, disk.serial, disk.size, disk.part_name,
-    disk.part_path, disk.fsavail, disk.fssize, disk.fstype, disk.fsused, disk.fsusepercent, disk.mountpoint, disk.label])
+    disk.part_path, disk.label, disk.fstype, disk.fssize, disk.fsavail, disk.fsused, disk.fsusepercent, disk.mountpoint])
 
 
 class TreeViewFilterWindow(Gtk.Window):
@@ -81,7 +81,7 @@ class TreeViewFilterWindow(Gtk.Window):
         self.treeview = Gtk.TreeView(model=self.disk_liststore)
         for k, column_title in enumerate(
             ["Name", "Path", "Hotplug", "Model", "Serial number", "Size", "Partition", "Partition path",
-            "fsavail", "fssize", "fstype", "fsused", "fsuse%", "mountpoint", "label"]):
+            "label", "fstype", "fssize", "fsavail", "fsused", "fsuse%", "mountpoint"]):
             renderer = Gtk.CellRendererText()
             column = Gtk.TreeViewColumn(column_title, renderer, text=k)
             self.treeview.append_column(column)
