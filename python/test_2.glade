@@ -44,12 +44,10 @@
             <property name="double-buffered">False</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
             <property name="label" translatable="yes">Hello World</property>
             <attributes>
               <attribute name="foreground" value="#3333d1d17a7a"/>
-              <!-- <attribute name="background" value="#000000000000"/> -->
+              <attribute name="background" value="#000000000000"/>
             </attributes>
           </object>
           <packing>
