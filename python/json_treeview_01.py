@@ -12,11 +12,16 @@ sys.path.insert(0, '/opt/dcptools/common')
 # sys.path.append('/opt/dcptools/common')
 from local_trims import trim_start, trim_end
 
+
 os.system('rm /opt/dcptools/temp/lsblk_all.json')
 os.system('/bin/lsblk -O --json > /opt/dcptools/temp/lsblk_all.json')
 
 with open('/opt/dcptools/temp/lsblk_all.json', 'r') as file:
-    disks = json.load(file)
+    all_disks = json.load(file)
+
+if len(all_disks['blockdevices']) -trim_start -trim_end == 0:
+    print("No disks found. Exiting...")
+    exit()
 
 
 class dcp_disk:
@@ -37,10 +42,11 @@ class dcp_disk:
         self.mountpoint = mountpoint
         self.label = label
 
+
 disk_list = []
 
 from itertools import islice
-for i in islice(disks['blockdevices'], trim_start, len(disks['blockdevices'])-trim_end):
+for i in islice(all_disks['blockdevices'], trim_start, len(all_disks['blockdevices'])-trim_end):
     pass
     disk = dcp_disk(i['name'],
     i['path'],
