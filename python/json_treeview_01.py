@@ -92,7 +92,7 @@ class TreeViewFilterWindow(Gtk.Window):
             column = Gtk.TreeViewColumn(column_title, renderer, text=k)
             self.treeview.append_column(column)
 
-        # creating buttons to filter by programming language, and setting up their events
+        # creating buttons and setting up their events
         self.buttons = list()
         for lbl in ["  1  ", "  2  ", "  3  ", "  4  "]:
             button = Gtk.Button(label=lbl)
