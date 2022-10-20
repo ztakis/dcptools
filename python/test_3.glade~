@@ -16,7 +16,8 @@
             <property name="margin-start">10</property>
             <property name="margin-end">10</property>
             <property name="margin-top">10</property>
-            <property name="layout-style">spread</property>
+            <property name="margin-bottom">10</property>
+            <property name="layout-style">center</property>
             <child>
               <object class="GtkButton">
                 <property name="label" translatable="yes">button</property>
@@ -70,7 +71,6 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="double-buffered">False</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
             <property name="hexpand">True</property>
@@ -88,6 +88,7 @@
             <property name="can-focus">False</property>
             <property name="margin-start">10</property>
             <property name="margin-end">10</property>
+            <property name="margin-top">10</property>
             <property name="margin-bottom">10</property>
             <property name="layout-style">end</property>
             <child>
