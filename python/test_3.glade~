@@ -2,72 +2,139 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <object class="GtkWindow" id="window1">
+  <object class="GtkWindow">
     <property name="can-focus">False</property>
-    <property name="default-width">480</property>
-    <property name="default-height">320</property>
-    <signal name="destroy" handler="onDestroy" swapped="no"/>
     <child>
-      <object class="GtkFixed">
+      <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkButton" id="button1">
-            <property name="label">gtk-yes</property>
-            <property name="width-request">100</property>
-            <property name="height-request">40</property>
+          <object class="GtkButtonBox">
+            <property name="visible">True</property>
+            <property name="can-focus">False</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="margin-top">10</property>
+            <property name="layout-style">spread</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton">
+            <property name="label">gtk-ok</property>
+            <property name="width-request">85</property>
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
             <property name="double-buffered">False</property>
-            <property name="halign">end</property>
-            <property name="valign">end</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
             <property name="hexpand">True</property>
             <property name="vexpand">True</property>
-            <property name="border-width">1</property>
             <property name="use-stock">True</property>
-            <signal name="pressed" handler="onButtonPressed" swapped="no"/>
           </object>
           <packing>
-            <property name="x">190</property>
-            <property name="y">150</property>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkButtonBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
-            <property name="double-buffered">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="label" translatable="yes">Hello World</property>
-            <attributes>
-              <attribute name="foreground" value="#3333d1d17a7a"/>
-              <attribute name="background" value="#000000000000"/>
-            </attributes>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="margin-bottom">10</property>
+            <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
           <packing>
-            <property name="x">204</property>
-            <property name="y">128</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="label2">
-            <property name="width-request">100</property>
-            <property name="height-request">80</property>
-            <property name="visible">True</property>
-            <property name="can-focus">False</property>
-            <property name="halign">center</property>
-            <property name="valign">center</property>
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>
-            <property name="label" translatable="yes">NEW</property>
-          </object>
-          <packing>
-            <property name="x">188</property>
-            <property name="y">30</property>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>
