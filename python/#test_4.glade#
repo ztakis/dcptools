@@ -70,11 +70,15 @@
           <object class="GtkNotebook">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
             <child>
-              <object class="GtkLabel">
+              <object class="GtkTreeView">
                 <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">label 1</property>
+                <property name="can-focus">True</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection"/>
+                </child>
               </object>
             </child>
             <child type="tab">
@@ -112,7 +116,13 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">label 3</property>
+                <property name="halign">start</property>
+                <property name="valign">start</property>
+                <property name="margin-start">10</property>
+                <property name="margin-top">10</property>
+                <property name="label" translatable="yes">label 3
+
+TEXT TEST</property>
               </object>
               <packing>
                 <property name="position">2</property>
