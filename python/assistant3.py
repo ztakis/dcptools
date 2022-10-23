@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from re import T
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -18,7 +19,7 @@ def main():
 
     box.pack_start(entry, True, True, 0)
     box.pack_start(text2, True, True, 0)
-    box.pack_end(button, True, True, 0)
+    box.pack_start(button, True, True, 0)
     entry.set_text("Hello World")
 
     text.set_editable(False)
