@@ -20,7 +20,7 @@
       <object class="GtkLabel">
         <property name="visible">True</property>
         <property name="can-focus">False</property>
-        <property name="label" translatable="yes">Content page 1</property>
+        <property name="label" translatable="yes">Content</property>
       </object>
       <packing>
         <property name="complete">True</property>
@@ -28,38 +28,13 @@
       </packing>
     </child>
     <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes">Content page 2</property>
-      </object>
-      <packing>
-        <property name="complete">True</property>
-        <property name="has-padding">False</property>
-      </packing>
+      <placeholder/>
     </child>
     <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes">Content page 3</property>
-      </object>
-      <packing>
-        <property name="complete">True</property>
-        <property name="has-padding">False</property>
-      </packing>
+      <placeholder/>
     </child>
     <child>
-      <object class="GtkLabel">
-        <property name="visible">True</property>
-        <property name="can-focus">False</property>
-        <property name="label" translatable="yes">Custom</property>
-      </object>
-      <packing>
-        <property name="page-type">custom</property>
-        <property name="complete">True</property>
-        <property name="has-padding">False</property>
-      </packing>
+      <placeholder/>
     </child>
     <child>
       <object class="GtkLabel">
