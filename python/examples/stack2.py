@@ -5,7 +5,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
 
-UI_FILE = "file.glade"
+UI_FILE = "stack2.glade"
 
 class GUI:
     def __init__(self):
