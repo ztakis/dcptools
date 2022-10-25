@@ -23,7 +23,7 @@
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Select job type:</property>
+                <property name="label" translatable="yes">Job type:</property>
               </object>
               <packing>
                 <property name="expand">True</property>

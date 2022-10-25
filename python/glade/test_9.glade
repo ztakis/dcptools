@@ -11,22 +11,22 @@
         <property name="visible">True</property>
         <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
         <child>
           <object class="GtkButtonBox">
             <property name="visible">True</property>
             <property name="can-focus">False</property>
             <property name="margin-top">10</property>
             <property name="margin-bottom">10</property>
-            <property name="spacing">32</property>
             <property name="layout-style">expand</property>
             <child>
               <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Select job type:</property>
+                <property name="label" translatable="yes">Job type:</property>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
@@ -47,10 +47,17 @@
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can-focus">True</property>
+                <property name="max-width-chars">2</property>
+                <property name="caps-lock-warning">False</property>
+                <property name="input-purpose">number</property>
+                <property name="numeric">True</property>
+                <property name="update-policy">if-valid</property>
+                <property name="value">1</property>
               </object>
               <packing>
-                <property name="expand">True</property>
+                <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="pack-type">end</property>
                 <property name="position">2</property>
               </packing>
             </child>
