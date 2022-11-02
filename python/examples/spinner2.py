@@ -10,12 +10,13 @@ class SpinnerWindow(Gtk.Window):
     def __init__(self, *args, **kwargs):
         super().__init__(title="Spinner Demo")
         self.set_border_width(10)
+        self.set_default_size(200, 230)
 
         mainBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.add(mainBox)
 
         self.spinner = Gtk.Spinner()
-        mainBox.pack_start(self.spinner, False, True, 0)
+        mainBox.pack_start(self.spinner, True, True, 0)
 
         self.label = Gtk.Label()
         mainBox.pack_start(self.label, False, True, 0)
