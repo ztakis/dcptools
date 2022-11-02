@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-import gi
+# import gi
 
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Gdk
+# gi.require_version("Gtk", "3.0")
+# from gi.repository import Gtk, Gdk
 
 
 # class MyWindow(Gtk.Window):
@@ -89,130 +89,174 @@ from gi.repository import Gtk, Gdk
 # win.show_all()
 # Gtk.main()
 
-class FlowBoxWindow(Gtk.Window):
+# class FlowBoxWindow(Gtk.Window):
+#     def __init__(self):
+#         super().__init__(title="FlowBox Demo")
+#         self.set_border_width(10)
+#         self.set_default_size(300, 250)
+
+#         header = Gtk.HeaderBar(title="Flow Box")
+#         header.set_subtitle("Sample FlowBox app")
+#         header.props.show_close_button = True
+
+#         self.set_titlebar(header)
+
+#         scrolled = Gtk.ScrolledWindow()
+#         scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+
+#         flowbox = Gtk.FlowBox()
+#         flowbox.set_valign(Gtk.Align.START)
+#         flowbox.set_max_children_per_line(30)
+#         flowbox.set_selection_mode(Gtk.SelectionMode.NONE)
+
+#         self.create_flowbox(flowbox)
+
+#         scrolled.add(flowbox)
+
+#         self.add(scrolled)
+#         self.show_all()
+
+#     def on_draw(self, widget, cr, data):
+#         context = widget.get_style_context()
+
+#         width = widget.get_allocated_width()
+#         height = widget.get_allocated_height()
+#         Gtk.render_background(context, cr, 0, 0, width, height)
+
+#         r, g, b, a = data["color"]
+#         cr.set_source_rgba(r, g, b, a)
+#         cr.rectangle(0, 0, width, height)
+#         cr.fill()
+
+#     def color_swatch_new(self, str_color):
+#         rgba = Gdk.RGBA()
+#         rgba.parse(str_color)
+
+#         button = Gtk.Button()
+
+#         area = Gtk.DrawingArea()
+#         area.set_size_request(24, 24)
+#         area.connect("draw", self.on_draw, {"color": rgba})
+
+#         button.add(area)
+
+#         return button
+
+#     def create_flowbox(self, flowbox):
+#         colors = [
+#             "AliceBlue",
+#             "AntiqueWhite",
+#             "AntiqueWhite1",
+#             "AntiqueWhite2",
+#             "AntiqueWhite3",
+#             "AntiqueWhite4",
+#             "aqua",
+#             "aquamarine",
+#             "aquamarine1",
+#             "aquamarine2",
+#             "aquamarine3",
+#             "aquamarine4",
+#             "azure",
+#             "azure1",
+#             "azure2",
+#             "azure3",
+#             "azure4",
+#             "beige",
+#             "bisque",
+#             "bisque1",
+#             "bisque2",
+#             "bisque3",
+#             "bisque4",
+#             "black",
+#             "BlanchedAlmond",
+#             "blue",
+#             "blue1",
+#             "blue2",
+#             "blue3",
+#             "blue4",
+#             "BlueViolet",
+#             "brown",
+#             "brown1",
+#             "brown2",
+#             "brown3",
+#             "brown4",
+#             "burlywood",
+#             "burlywood1",
+#             "burlywood2",
+#             "burlywood3",
+#             "burlywood4",
+#             "CadetBlue",
+#             "CadetBlue1",
+#             "CadetBlue2",
+#             "CadetBlue3",
+#             "CadetBlue4",
+#             "chartreuse",
+#             "chartreuse1",
+#             "chartreuse2",
+#             "chartreuse3",
+#             "chartreuse4",
+#             "chocolate",
+#             "chocolate1",
+#             "chocolate2",
+#             "chocolate3",
+#             "chocolate4",
+#             "coral",
+#             "coral1",
+#             "coral2",
+#             "coral3",
+#             "coral4",
+#         ]
+
+#         for color in colors:
+#             button = self.color_swatch_new(color)
+#             flowbox.add(button)
+
+
+# win = FlowBoxWindow()
+# win.connect("destroy", Gtk.main_quit)
+# win.show_all()
+# Gtk.main()
+
+import gi
+# Since a system can have multiple versions
+# of GTK + installed, we want to make 
+# sure that we are importing GTK + 3.
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+  
+  
+class StackWindow(Gtk.Window):
     def __init__(self):
-        super().__init__(title="FlowBox Demo")
+        Gtk.Window.__init__(self, title ="Geeks for Geeks")
         self.set_border_width(10)
-        self.set_default_size(300, 250)
-
-        header = Gtk.HeaderBar(title="Flow Box")
-        header.set_subtitle("Sample FlowBox app")
-        header.props.show_close_button = True
-
-        self.set_titlebar(header)
-
-        scrolled = Gtk.ScrolledWindow()
-        scrolled.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-
-        flowbox = Gtk.FlowBox()
-        flowbox.set_valign(Gtk.Align.START)
-        flowbox.set_max_children_per_line(30)
-        flowbox.set_selection_mode(Gtk.SelectionMode.NONE)
-
-        self.create_flowbox(flowbox)
-
-        scrolled.add(flowbox)
-
-        self.add(scrolled)
-        self.show_all()
-
-    def on_draw(self, widget, cr, data):
-        context = widget.get_style_context()
-
-        width = widget.get_allocated_width()
-        height = widget.get_allocated_height()
-        Gtk.render_background(context, cr, 0, 0, width, height)
-
-        r, g, b, a = data["color"]
-        cr.set_source_rgba(r, g, b, a)
-        cr.rectangle(0, 0, width, height)
-        cr.fill()
-
-    def color_swatch_new(self, str_color):
-        rgba = Gdk.RGBA()
-        rgba.parse(str_color)
-
-        button = Gtk.Button()
-
-        area = Gtk.DrawingArea()
-        area.set_size_request(24, 24)
-        area.connect("draw", self.on_draw, {"color": rgba})
-
-        button.add(area)
-
-        return button
-
-    def create_flowbox(self, flowbox):
-        colors = [
-            "AliceBlue",
-            "AntiqueWhite",
-            "AntiqueWhite1",
-            "AntiqueWhite2",
-            "AntiqueWhite3",
-            "AntiqueWhite4",
-            "aqua",
-            "aquamarine",
-            "aquamarine1",
-            "aquamarine2",
-            "aquamarine3",
-            "aquamarine4",
-            "azure",
-            "azure1",
-            "azure2",
-            "azure3",
-            "azure4",
-            "beige",
-            "bisque",
-            "bisque1",
-            "bisque2",
-            "bisque3",
-            "bisque4",
-            "black",
-            "BlanchedAlmond",
-            "blue",
-            "blue1",
-            "blue2",
-            "blue3",
-            "blue4",
-            "BlueViolet",
-            "brown",
-            "brown1",
-            "brown2",
-            "brown3",
-            "brown4",
-            "burlywood",
-            "burlywood1",
-            "burlywood2",
-            "burlywood3",
-            "burlywood4",
-            "CadetBlue",
-            "CadetBlue1",
-            "CadetBlue2",
-            "CadetBlue3",
-            "CadetBlue4",
-            "chartreuse",
-            "chartreuse1",
-            "chartreuse2",
-            "chartreuse3",
-            "chartreuse4",
-            "chocolate",
-            "chocolate1",
-            "chocolate2",
-            "chocolate3",
-            "chocolate4",
-            "coral",
-            "coral1",
-            "coral2",
-            "coral3",
-            "coral4",
-        ]
-
-        for color in colors:
-            button = self.color_swatch_new(color)
-            flowbox.add(button)
-
-
-win = FlowBoxWindow()
+  
+        # Creating a box vertically oriented with a space of 100 pixel.
+        vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 100)
+        self.add(vbox)
+  
+        # Creating stack, transition type and transition duration.
+        stack = Gtk.Stack()
+        stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        stack.set_transition_duration(500)
+  
+        # Creating the check button.
+        checkbutton = Gtk.CheckButton("Yes")
+        stack.add_titled(checkbutton, "check", "Check Button")
+  
+        # Creating label .
+        label = Gtk.Label()
+        label.set_markup("<big>Hello World</big>")
+        stack.add_titled(label, "label", "Label")
+  
+        # Implementation of stack switcher.
+        stack_switcher = Gtk.StackSwitcher()
+        stack_switcher.set_stack(stack)
+        # vbox.pack_start(stack_switcher, True, True, 0)
+        vbox.pack_start(stack, True, True, 0)
+        vbox.pack_start(stack_switcher, True, True, 0)
+  
+  
+win = StackWindow()
 win.connect("destroy", Gtk.main_quit)
 win.show_all()
 Gtk.main()
