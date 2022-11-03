@@ -32,12 +32,15 @@ builder.connect_signals(Handler())
 win = builder.get_object("window1")
 win.show_all()
 
-def vc_changed(stack, gparamstring):
+def print_page(stack, gparamstring):
     page = stack.get_visible_child_name()
     print(page)
+    
 stack = builder.get_object('stack1')
-stack.connect("notify::visible-child", vc_changed)
+stack.connect("notify::visible-child", print_page)
 
 pages = stack.get_children()
+
+print_page(stack,any)
 
 Gtk.main()
