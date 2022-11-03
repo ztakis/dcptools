@@ -23,8 +23,8 @@ class GUI:
     def onButton0Clicked(self, button):
         stack = self.builder.get_object('stack1')
         pages = stack.get_children()
-        cur_page = stack.get_visible_child()
-        i = pages.index(cur_page)
+        current_page = stack.get_visible_child()
+        i = pages.index(current_page)
         if i == 0: return
         stack.set_visible_child(pages[i-1])
         page = stack.get_visible_child_name()
@@ -33,8 +33,8 @@ class GUI:
     def onButton1Clicked(self, button):
         stack = self.builder.get_object('stack1')
         pages = stack.get_children()
-        cur_page = stack.get_visible_child()
-        i = pages.index(cur_page)
+        current_page = stack.get_visible_child()
+        i = pages.index(current_page)
         if i == len(pages) - 1: return
         stack.set_visible_child(pages[i+1])
         page = stack.get_visible_child_name()
