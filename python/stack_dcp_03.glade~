@@ -89,9 +89,6 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">Contents of page3</property>
-                <attributes>
-                  <attribute name="background" value="#c6c646460000"/>
-                </attributes>
               </object>
               <packing>
                 <property name="name">page3</property>

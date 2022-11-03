@@ -16,6 +16,7 @@
     <property name="height-request">320</property>
     <property name="can-focus">False</property>
     <property name="border-width">10</property>
+    <property name="title" translatable="yes">Stack Demo</property>
     <signal name="destroy" handler="onDestroy" swapped="no"/>
     <child>
       <object class="GtkBox">
