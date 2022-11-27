@@ -1,6 +1,6 @@
 #!/bin/bash
 
-version=1.7
+version=1.8
 echo $version > /dev/null   # to quiet shellcheck
 
 source /opt/dcptools/common/local_config
@@ -57,7 +57,7 @@ function spinner {
 }
 
 function disk_list {
-    lsblk | grep disk | awk '{print $1}' | grep -Ev $protected_disks | sort
+    lsblk | grep disk | awk '{print $1}' | grep -Ev "$protected_disks" | sort
 }
 
 function root_check {
@@ -74,15 +74,15 @@ function error_log_check {
             fi
         done
     elif [ "$1" == "-p" ]; then
-        if [ -f $temp/error.log ]; then
-            if [ -s $temp/error.log ]; then
+        if [ -f "$temp"/error.log ]; then
+            if [ -s "$temp"/error.log ]; then
                 echo -e "${b_yellow}Previous error.log not empty! Delete?${clear}"
-                confirm; rm $temp/error.log
-            else rm $temp/error.log
+                confirm; rm "$temp"/error.log
+            else rm "$temp"/error.log
             fi
         fi
     else
-        if [ -s $temp/error.log ]; then
+        if [ -s "$temp"/error.log ]; then
             echo; echo -e "${b_red}Errors reported while copying! Check error.log for details${clear}"
         fi
     fi
@@ -95,11 +95,11 @@ function no_disk_check {
 }
 
 function unmount_disks {
-    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
+    if grep '/dev/sd' /proc/mounts | grep -Evq "$protected_disks"; then
         echo -e "${b_yellow}Found mounted disk(s). Unmounting...${clear}"; echo
         umount -f /media/"$SUDO_USER"/*
     fi
-    if grep '/dev/sd' /proc/mounts | grep -Evq $protected_disks; then
+    if grep '/dev/sd' /proc/mounts | grep -Evq "$protected_disks"; then
         echo -e "${b_yellow}Error: Unmounting disk(s) failed. Exiting...${clear}"; echo; exit 1
     fi
 }
@@ -183,7 +183,7 @@ function byte_check {
 }
 
 function get_serials {
-    mapfile -t auto_mounted < <(grep '/dev/sd' /proc/self/mounts | grep -Ev $protected_disks)
+    mapfile -t auto_mounted < <(grep '/dev/sd' /proc/self/mounts | grep -Ev "$protected_disks")
     printf "%s\t\t%s\t\t\t%s\n" "DISK" "SERIAL" "MOUNTPOINT"
     echo "-----------------------------------------------------------------"
     for u in "${auto_mounted[@]}"; do
@@ -243,8 +243,8 @@ function diskprep_end {
 
 function show_disks {
     echo -e "${b_blue}Showing disk list:${clear}"
-    lsblk -o name,type,size,label,fstype,mountpoint | grep -Ev $protected_disks
-    parts_num=$(lsblk -ln | grep -Ev $protected_disks | grep -c part)
+    lsblk -o name,type,size,label,fstype,mountpoint | grep -Ev "$protected_disks"
+    parts_num=$(lsblk -ln | grep -Ev "$protected_disks" | grep -c part)
     echo; echo -e "${b_blue}Total disks found:${clear} $parts_num"; echo
 }
 
@@ -456,11 +456,11 @@ function copy2all {
         start=$SECONDS
         if [ "$first_time" == true ]; then
             for dest in "${usb_list[@]}"; do
-                cp -rp "$source" "$dest/" 2>> $temp/error.log &
+                cp -rp "$source" "$dest/" 2>> "$temp"/error.log &
             done
         elif [ "$first_time" == false ]; then
             for dest in "${usb_list[@]}"; do
-                rsync -aq "$source" "$dest/" 2>> $temp/error.log &
+                rsync -aq "$source" "$dest/" 2>> "$temp"/error.log &
             done
         fi
         multi_bars
@@ -472,13 +472,13 @@ function batch_copy {
         for dest in "${usb_list[@]}"; do
             if ((c % threads == 0)); then wait; fi
             ((c++))
-            cp -rp "$source" "$dest/" 2>> $temp/error.log &
+            cp -rp "$source" "$dest/" 2>> "$temp"/error.log &
         done
     elif [ "$1" == false ]; then
         for dest in "${usb_list[@]}"; do
             if ((c % threads == 0)); then wait; fi
             ((c++))
-            rsync -aq "$source" "$dest/" 2>> $temp/error.log &
+            rsync -aq "$source" "$dest/" 2>> "$temp"/error.log &
         done
     fi
 }
@@ -635,7 +635,7 @@ function bytecheck {
     if [ -z "$source" ]; then
         echo; echo; echo -e "${b_yellow}DCP source(s)${clear}"
         echo "-----------------------------------------------------------------"
-        du -sb $default_sources_dir/*/
+        du -sb "$default_sources_dir"/*/
         echo; echo -e "${b_yellow}Destination disk(s)${clear}"
         echo "-----------------------------------------------------------------"
         # du -sb --exclude={lost+found/,"System Volume Information"/} /media/$SUDO_USER/*/*/
