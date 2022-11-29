@@ -7,6 +7,3 @@
 
 # protected_disks='nvme|sda'
 # default_sources_dir="/mnt/nvme0n1p2/DCPs"
-
-# protected_disks='nvme|sda'
-# default_sources_dir="/home/akis/DCPsources"
