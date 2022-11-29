@@ -1,9 +1,0 @@
-#!/bin/bash
-
-excluded_disks='nvme|sda|sdb|sdc'
-
-echo -e "Automounting disks..."; echo
-for i in $(lsblk | grep disk | awk '{print $1}' | grep -Ev $excluded_disks | sort); do
-    udisksctl mount --options noatime -b /dev/"$i"1
-done
-echo
